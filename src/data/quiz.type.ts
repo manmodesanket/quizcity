@@ -15,6 +15,15 @@ export type Question = {
 export type Quiz = {
   id: string;
   title: string;
+  imageUrl: string;
   totalScore: number;
   questions: Array<Question>;
+};
+
+export const emptyQuiz: Quiz = {
+  id: "",
+  title: "",
+  imageUrl: "",
+  totalScore: 0,
+  questions: [],
 };

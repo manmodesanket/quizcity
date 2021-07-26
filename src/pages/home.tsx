@@ -4,7 +4,7 @@ import { QuizList } from "../components";
 export default function Home() {
   return (
     <div>
-      <Header title={"Sitcom Quiz"} />
+      <Header title={"Quiz City"} />
       <QuizList />
     </div>
   );
