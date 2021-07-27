@@ -33,7 +33,7 @@ export const allQuizzes: Array<Quiz> = [
       },
 
       {
-        id: "0200aa14-5d75-4a66-8b1b-85d516e504ce",
+        id: "eadc854f-5d80-4f7b-a3f2-44f39deab200",
         question: "Second Question?",
         points: 10,
         negativePoints: 5,

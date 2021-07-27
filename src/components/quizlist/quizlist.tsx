@@ -2,7 +2,6 @@ import React from "react";
 import { Quiz } from "../../data/quiz.type";
 import { Link } from "react-router-dom";
 import { useData } from "../../context/datacontext";
-import { isTemplateMiddle } from "typescript";
 
 const QuizCard: React.FC<{ item: Quiz }> = ({ item }) => {
   return (
