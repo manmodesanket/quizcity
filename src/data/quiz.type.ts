@@ -27,3 +27,13 @@ export const emptyQuiz: Quiz = {
   totalScore: 0,
   questions: [],
 };
+
+export type Answer = {
+  questionId: string;
+  optionId: string;
+};
+
+export type Result = {
+  answers: Array<Answer>;
+  quiz: Quiz;
+};

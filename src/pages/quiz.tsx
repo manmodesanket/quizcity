@@ -1,5 +1,5 @@
 import { useState, useEffect, SetStateAction } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useData } from "../context/datacontext";
 import { emptyQuiz, Question, Quiz } from "../data/quiz.type";
 import { quizInitialState } from "../reducers/quiz.reducer";
@@ -11,6 +11,7 @@ type answer = {
 
 function QuizPage() {
   const urlParam: any = useParams();
+  let history = useHistory();
   const {
     state: { allQuizzes },
   } = useData();
@@ -86,6 +87,12 @@ function QuizPage() {
           onClick={() => updateOption("DESC")}
         >
           Prev
+        </button>
+        <button
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => history.push("/result", { quiz, answers })}
+        >
+          Finish Test
         </button>
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
