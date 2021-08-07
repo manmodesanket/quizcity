@@ -13,6 +13,12 @@ export const quizReducer = (state: QUIZ_STATE, action: ACTION): QUIZ_STATE => {
         allQuizzes: getAllQuizzes(),
       };
 
+    case "INITIALIZE_ALL_QUIZZES_FROM_FIREBASE":
+      return {
+        ...state,
+        allQuizzes: action.payload.data,
+      };
+
     default:
       return state;
   }

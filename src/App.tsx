@@ -3,7 +3,7 @@ import "./App.css";
 import { DataProvider } from "./context/datacontext";
 import { Home, QuizPage } from "./pages";
 import ResultPage from "./pages/result";
-import * as ROUTES from "./routes/routes";
+import * as ROUTES from "./constants/routes";
 
 function App() {
   return (

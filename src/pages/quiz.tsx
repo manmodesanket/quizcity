@@ -1,8 +1,7 @@
-import { useState, useEffect, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useData } from "../context/datacontext";
-import { emptyQuiz, Question, Quiz } from "../data/quiz.type";
-import { quizInitialState } from "../reducers/quiz.reducer";
+import { emptyQuiz } from "../data/quiz.type";
 
 type answer = {
   questionId: string;
@@ -25,14 +24,14 @@ function QuizPage() {
   useEffect(() => {
     const quiz = allQuizzes?.find((item) => item.id === id)!;
     setQuiz(quiz);
-  }, [urlParam]);
+  }, [id, allQuizzes]);
 
   useEffect(() => {
     const answer = answers.find(
       (item) => item.questionId === quiz.questions[count].id
     )!;
     setSelectedOption(answer?.optionId);
-  }, [count, answers]);
+  }, [count, answers, quiz.questions]);
 
   const updateOption = (action: string) => {
     if (count + 1 < quiz.questions.length && action === "INC") {
@@ -52,26 +51,23 @@ function QuizPage() {
   };
 
   return quiz.title ? (
-    <div className="mx-auto px-5 sm:px-40 flex flex-col">
+    <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
       <h1 className="text-4xl text-center mt-4 font-bold">{quiz.title}</h1>
       <div>
-        <div className="w-full flex justify-between mt-8">
-          <div>
-            {" "}
-            Question: {count + 1}/{quiz.questions.length}
+        <div className="w-full flex justify-between mt-8 p-4">
+          <div className="font-bold text-lg rounded">
+            {count + 1}. {quiz.questions[count].question}
           </div>
-          <div>Points: 5</div>
+          <div className="font-bold">Points: 5</div>
         </div>
-        <div className="my-4 font-bold text-lg bg-yellow-400 rounded p-4">
-          {quiz.questions[count].question}
-        </div>
+
         <ul>
           {quiz.questions[count].options.map((option) => (
             <li
-              className={`mb-4 text-center w-full p-4 border-2 rounded-xl cursor-pointer font-bold ${
+              className={`mb-4 text-center w-full p-4 rounded-xl bg-gray-700 cursor-pointer font-bold ${
                 selectedOption === option.id
-                  ? "bg-green-300 border-green-300"
-                  : "hover:bg-green-600"
+                  ? "bg-green-600"
+                  : "hover:bg-green-800"
               }`}
               key={option.id}
               onClick={() => updateAnswer(quiz.questions[count].id, option.id)}
