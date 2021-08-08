@@ -16,11 +16,13 @@ export default function ResultPage() {
       const answer = answers.filter(
         (answerItem) => answerItem.questionId === item.id
       );
-      let optionId = getCorrectOption(item);
-      if (answer[0].optionId === optionId) {
-        sum += 10;
-      } else {
-        sum -= 5;
+      if (answer.length > 0) {
+        let optionId = getCorrectOption(item);
+        if (answer[0].optionId === optionId) {
+          sum += 10;
+        } else {
+          sum -= 5;
+        }
       }
     });
     setTotal(sum);
@@ -50,9 +52,10 @@ export default function ResultPage() {
                     }
 
                     ${
-                      answer[0].optionId === option.id && !option.isAnswer
+                      answer.length > 0 &&
+                      (answer[0].optionId === option.id && !option.isAnswer
                         ? `bg-red-500`
-                        : null
+                        : null)
                     }`}
                     key={option.id}
                   >
@@ -63,7 +66,7 @@ export default function ResultPage() {
             </div>
           );
         })}
-        <div className="text-4xl text-center mt-4 font-bold">
+        <div className="text-4xl text-center my-4 font-bold">
           Total Score: {total}
         </div>
       </div>

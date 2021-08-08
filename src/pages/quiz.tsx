@@ -22,8 +22,10 @@ function QuizPage() {
   const [selectedOption, setSelectedOption] = useState("");
 
   useEffect(() => {
-    const quiz = allQuizzes?.find((item) => item.id === id)!;
-    setQuiz(quiz);
+    if (allQuizzes !== null && allQuizzes.length > 0) {
+      const quiz = allQuizzes?.find((item) => item.id === id)!;
+      setQuiz(quiz);
+    }
   }, [id, allQuizzes]);
 
   useEffect(() => {
@@ -50,7 +52,7 @@ function QuizPage() {
     setAnswers(newAnswersArray);
   };
 
-  return quiz.title ? (
+  return !(quiz === emptyQuiz) ? (
     <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
       <h1 className="text-4xl text-center mt-4 font-bold">{quiz.title}</h1>
       <div>
@@ -78,28 +80,34 @@ function QuizPage() {
         </ul>
       </div>
       <div className="flex justify-between">
-        <button
-          className="bg-white hover:bg-blue-200 rounded border-2 border-blue-500 text-blue-500 font-bold py-2 px-4 rounded"
-          onClick={() => updateOption("DESC")}
-        >
-          Prev
-        </button>
+        {count > 0 && (
+          <button
+            className="bg-white hover:bg-blue-200 rounded border-2 border-blue-500 text-blue-500 font-bold py-2 px-4 rounded"
+            onClick={() => updateOption("DESC")}
+          >
+            Prev
+          </button>
+        )}
         <button
           className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
           onClick={() => history.push("/result", { quiz, answers })}
         >
           Finish Test
         </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => updateOption("INC")}
-        >
-          Next
-        </button>
+        {count + 1 < quiz.questions.length && (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => updateOption("INC")}
+          >
+            Next
+          </button>
+        )}
       </div>
     </div>
   ) : (
-    <div>Hello</div>
+    <div className="mx-auto bg-gray-800 min-h-screen text-gray-100">
+      Loading...
+    </div>
   );
 }
 
