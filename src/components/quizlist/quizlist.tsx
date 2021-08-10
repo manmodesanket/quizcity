@@ -24,12 +24,15 @@ const QuizCard: React.FC<{ item: Quiz }> = ({ item }) => {
 const QuizList: React.FC = () => {
   const {
     state: { allQuizzes },
+    loading,
   } = useData();
 
-  useEffect(() => {}, [allQuizzes]);
-
+  console.log(loading);
   return (
     <div className="flex flex-wrap mb-4 mx-auto container mx-auto px-4">
+      {loading && (
+        <div className="mx-auto mt-4 animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-white"></div>
+      )}
       {allQuizzes?.map((quizItem) => (
         <QuizCard key={quizItem.id} item={quizItem} />
       ))}

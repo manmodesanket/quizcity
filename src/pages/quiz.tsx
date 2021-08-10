@@ -13,6 +13,7 @@ function QuizPage() {
   let history = useHistory();
   const {
     state: { allQuizzes },
+    loading,
   } = useData();
 
   const id = urlParam.quizId;
@@ -105,8 +106,10 @@ function QuizPage() {
       </div>
     </div>
   ) : (
-    <div className="mx-auto bg-gray-800 min-h-screen text-gray-100">
-      Loading...
+    <div>
+      {loading && (
+        <div className="mx-auto mt-4 animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-white"></div>
+      )}
     </div>
   );
 }
