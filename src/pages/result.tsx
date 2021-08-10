@@ -8,7 +8,6 @@ export default function ResultPage() {
   const { state } = useLocation();
   const [total, setTotal] = useState(0);
   const { answers, quiz } = state as Result;
-  console.log(answers);
 
   useEffect(() => {
     let sum = 0;
@@ -26,7 +25,7 @@ export default function ResultPage() {
       }
     });
     setTotal(sum);
-  }, []);
+  }, [answers, quiz]);
 
   return (
     <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
