@@ -3,6 +3,7 @@ import { Result } from "../data/quiz.type";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getCorrectOption } from "../utils/quiz";
+import { addResultToBackend } from "../utils/result";
 
 export default function ResultPage() {
   const { state } = useLocation();
@@ -25,6 +26,14 @@ export default function ResultPage() {
       }
     });
     setTotal(sum);
+    let db = window.firebase.firestore();
+    let data = {
+      title: quiz.title,
+      userId: window.firebase.auth().currentUser.displayName,
+      db: db,
+      total: sum,
+    };
+    addResultToBackend(data);
   }, [answers, quiz]);
 
   return (
