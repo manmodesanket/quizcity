@@ -26,7 +26,6 @@ const QuizList: React.FC = () => {
     loading,
   } = useData();
 
-  console.log(loading);
   return (
     <div className="flex flex-wrap mb-4 mx-auto container mx-auto px-4">
       {loading && (
