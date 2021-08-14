@@ -5,7 +5,7 @@ import { useData } from "../../context/datacontext";
 
 type PrivateRouteType = {
   path: string;
-  Element: any;
+  Element: React.ComponentType<any>;
 };
 
 const PrivateRoute = ({ path, Element, ...props }: PrivateRouteType) => {

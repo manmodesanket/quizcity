@@ -19,7 +19,6 @@ export default function Form() {
       setError("Please enter all the fields");
     } else {
       let auth = window.firebase.auth();
-
       if (formType === "login") {
         auth
           .signInWithEmailAndPassword(email, password)

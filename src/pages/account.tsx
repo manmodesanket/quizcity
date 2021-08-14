@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Form } from "../components";
 import Navbar from "../components/navbar/navbar";
 import { useData } from "../context/datacontext";
@@ -9,9 +9,7 @@ export default function AccountPage() {
   return loading ? (
     <div>
       <Navbar />
-      <div className="mx-auto px-4 sm:px-40 bg-gray-800 min-h-screen text-gray-100">
-        Loading...
-      </div>
+      <div className="mx-auto mt-4 animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
     </div>
   ) : !profile ? (
     <div className="bg-gray-800">
@@ -24,28 +22,7 @@ export default function AccountPage() {
 }
 
 function AccountData() {
-  const [results, setResults] = useState<any>();
-  const { profile, logout } = useData();
-
-  useEffect(() => {
-    async function getData() {
-      let db = window.firebase.firestore();
-      let userId = window.firebase.auth().currentUser.displayName;
-      let data = await db
-        .collection("quiz-result")
-        .doc(userId)
-        .get()
-        .then((doc: any) => doc.data());
-      const dataMap = Object.entries(data);
-      setResults(dataMap);
-    }
-    getData();
-  }, []);
-
-  function handleLogout(): void {
-    window.firebase.auth().signOut();
-    logout();
-  }
+  const { profile, logout, results } = useData();
 
   return (
     <div>
@@ -55,7 +32,7 @@ function AccountData() {
           <div className="w-full sm:w-5/12 bg-gray-600 rounded">
             <div>Welcome {profile?.displayName && profile.displayName}</div>
             <button
-              onClick={() => handleLogout()}
+              onClick={() => logout()}
               className="bg-blue-200 hover:bg-blue-dark text-white font-bold py-1 px-2 rounded"
             >
               Logout

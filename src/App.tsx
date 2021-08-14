@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { DataProvider } from "./context/datacontext";
 import { AccountPage, Home, QuizPage, ResultPage } from "./pages";
 import * as ROUTES from "./constants/routes";
