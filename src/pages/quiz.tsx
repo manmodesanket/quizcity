@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
+import { Timer } from "../components";
+import Navbar from "../components/navbar/navbar";
+import { Time } from "../components/timer/timer.types";
 import { useData } from "../context/datacontext";
 import { emptyQuiz } from "../data/quiz.type";
 
@@ -21,6 +24,8 @@ function QuizPage() {
   const [quiz, setQuiz] = useState(emptyQuiz);
   const [answers, setAnswers] = useState<Array<answer>>([]);
   const [selectedOption, setSelectedOption] = useState("");
+  const [timeUp, setTimeUp] = useState(false);
+  const minSec: Time = { minutes: 0, seconds: 10 };
 
   useEffect(() => {
     if (allQuizzes !== null && allQuizzes.length > 0) {
@@ -53,15 +58,32 @@ function QuizPage() {
     setAnswers(newAnswersArray);
   };
 
+  if (timeUp) {
+    return (
+      <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
+        <h2 className="mx-auto text-xl mb-4">Time is up</h2>
+        <button
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => history.push("/result", { quiz, answers })}
+        >
+          Finish Test
+        </button>
+      </div>
+    );
+  }
+
   return !(quiz === emptyQuiz) ? (
     <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
       <h1 className="text-4xl text-center mt-4 font-bold">{quiz.title}</h1>
+      <Timer minSec={minSec} setTimeUp={setTimeUp} />
       <div>
         <div className="w-full flex justify-between mt-8 p-4">
           <div className="font-bold text-lg rounded">
             {count + 1}. {quiz.questions[count].question}
           </div>
-          <div className="font-bold">Points: 5</div>
+          <div className="font-bold">
+            Points: {quiz.questions[count].points}
+          </div>
         </div>
 
         <ul>
