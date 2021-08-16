@@ -38,13 +38,16 @@ export default function ResultPage() {
   }, [answers, quiz]);
 
   return (
-    <div>
+    <>
       <Navbar />
-      <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
-        <h1 className="text-4xl text-center mt-4 font-bold">
-          {quiz.title} Quiz Result
-        </h1>
-        <div className="">
+      <main className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
+        <section>
+          {" "}
+          <h1 className="text-4xl text-center mt-4 font-bold">
+            {quiz.title} Quiz Result
+          </h1>
+        </section>
+        <section>
           {quiz.questions.map((item, i) => {
             const answer = answers.filter(
               (answerItem) => answerItem.questionId === item.id
@@ -77,11 +80,11 @@ export default function ResultPage() {
               </div>
             );
           })}
-          <div className="text-4xl text-center my-4 font-bold">
-            Total Score: {total}
-          </div>
-        </div>
-      </div>
-    </div>
+        </section>
+        <section className="text-4xl text-center my-4 font-bold">
+          Total Score: {total}
+        </section>
+      </main>
+    </>
   );
 }

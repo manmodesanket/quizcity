@@ -30,8 +30,8 @@ export default function Timer({
   });
 
   return (
-    <div className="mx-auto mt-4 p-2 rounded border-2 border-gray-300">
+    <section className="mx-auto mt-4 p-2 rounded border-2 border-gray-300">
       Timer: {mins}:{secs}
-    </div>
+    </section>
   );
 }

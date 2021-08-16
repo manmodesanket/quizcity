@@ -66,8 +66,10 @@ function QuizPage() {
   }
 
   return !(quiz === emptyQuiz) ? (
-    <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
-      <h1 className="text-4xl text-center mt-4 font-bold">{quiz.title}</h1>
+    <main className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
+      <section className="text-4xl text-center mt-4 font-bold">
+        {quiz.title}
+      </section>
       <Timer minSec={minSec} setTimeUp={setTimeUp} />
       <QuestionComponent
         question={quiz.questions[count]}
@@ -75,14 +77,14 @@ function QuizPage() {
         selectedOption={selectedOption}
         updateAnswer={updateAnswer}
       />
-      <div className="flex justify-between">
+      <section className="flex justify-between">
         {count > 0 && <PrevButton updateOption={updateOption} />}
         <FinishButton quiz={quiz} answers={answers} />
         {count + 1 < quiz.questions.length && (
           <NextButton updateOption={updateOption} />
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   ) : (
     <div>
       {loading && (
@@ -104,7 +106,7 @@ function QuestionComponent({
   updateAnswer: (questionId: string, optionId: string) => void;
 }) {
   return (
-    <div>
+    <section>
       <div className="w-full flex justify-between mt-8 p-4">
         <div className="font-bold text-lg rounded">
           {count + 1}. {question.question}
@@ -127,7 +129,7 @@ function QuestionComponent({
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }
 
