@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { Timer } from "../components";
-import Navbar from "../components/navbar/navbar";
 import { Time } from "../components/timer/timer.types";
 import { useData } from "../context/datacontext";
-import { emptyQuiz } from "../data/quiz.type";
+import { emptyQuiz, Question, Quiz } from "../data/quiz.type";
 
 type answer = {
   questionId: string;
@@ -13,7 +12,6 @@ type answer = {
 
 function QuizPage() {
   const urlParam: any = useParams();
-  let history = useHistory();
   const {
     state: { allQuizzes },
     loading,
@@ -25,7 +23,7 @@ function QuizPage() {
   const [answers, setAnswers] = useState<Array<answer>>([]);
   const [selectedOption, setSelectedOption] = useState("");
   const [timeUp, setTimeUp] = useState(false);
-  const minSec: Time = { minutes: 0, seconds: 10 };
+  const minSec: Time = { minutes: 1, seconds: 0 };
 
   useEffect(() => {
     if (allQuizzes !== null && allQuizzes.length > 0) {
@@ -62,12 +60,7 @@ function QuizPage() {
     return (
       <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
         <h2 className="mx-auto text-xl mb-4">Time is up</h2>
-        <button
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => history.push("/result", { quiz, answers })}
-        >
-          Finish Test
-        </button>
+        <FinishButton quiz={quiz} answers={answers} />
       </div>
     );
   }
@@ -76,54 +69,17 @@ function QuizPage() {
     <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
       <h1 className="text-4xl text-center mt-4 font-bold">{quiz.title}</h1>
       <Timer minSec={minSec} setTimeUp={setTimeUp} />
-      <div>
-        <div className="w-full flex justify-between mt-8 p-4">
-          <div className="font-bold text-lg rounded">
-            {count + 1}. {quiz.questions[count].question}
-          </div>
-          <div className="font-bold">
-            Points: {quiz.questions[count].points}
-          </div>
-        </div>
-
-        <ul>
-          {quiz.questions[count].options.map((option) => (
-            <li
-              className={`mb-4 text-center w-full p-4 rounded-xl bg-gray-700 cursor-pointer font-bold ${
-                selectedOption === option.id
-                  ? "bg-green-600"
-                  : "hover:bg-green-800"
-              }`}
-              key={option.id}
-              onClick={() => updateAnswer(quiz.questions[count].id, option.id)}
-            >
-              {option.content}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <QuestionComponent
+        question={quiz.questions[count]}
+        count={count}
+        selectedOption={selectedOption}
+        updateAnswer={updateAnswer}
+      />
       <div className="flex justify-between">
-        {count > 0 && (
-          <button
-            className="bg-white hover:bg-blue-200 rounded border-2 border-blue-500 text-blue-500 font-bold py-2 px-4 rounded"
-            onClick={() => updateOption("DESC")}
-          >
-            Prev
-          </button>
-        )}
-        <button
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => history.push("/result", { quiz, answers })}
-        >
-          Finish Test
-        </button>
+        {count > 0 && <PrevButton updateOption={updateOption} />}
+        <FinishButton quiz={quiz} answers={answers} />
         {count + 1 < quiz.questions.length && (
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => updateOption("INC")}
-          >
-            Next
-          </button>
+          <NextButton updateOption={updateOption} />
         )}
       </div>
     </div>
@@ -133,6 +89,87 @@ function QuizPage() {
         <div className="mx-auto mt-4 animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
       )}
     </div>
+  );
+}
+
+function QuestionComponent({
+  question,
+  count,
+  selectedOption,
+  updateAnswer,
+}: {
+  question: Question;
+  count: number;
+  selectedOption: string;
+  updateAnswer: (questionId: string, optionId: string) => void;
+}) {
+  return (
+    <div>
+      <div className="w-full flex justify-between mt-8 p-4">
+        <div className="font-bold text-lg rounded">
+          {count + 1}. {question.question}
+        </div>
+        <div className="font-bold">Points: {question.points}</div>
+      </div>
+
+      <ul>
+        {question.options.map((option) => (
+          <li
+            className={`mb-4 text-center w-full p-4 rounded-xl bg-gray-700 cursor-pointer font-bold ${
+              selectedOption === option.id
+                ? "bg-green-600"
+                : "hover:bg-green-800"
+            }`}
+            key={option.id}
+            onClick={() => updateAnswer(question.id, option.id)}
+          >
+            {option.content}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function PrevButton({
+  updateOption,
+}: {
+  updateOption: (action: string) => void;
+}) {
+  return (
+    <button
+      className="bg-white hover:bg-blue-200 rounded border-2 border-blue-500 text-blue-500 font-bold py-2 px-4 rounded"
+      onClick={() => updateOption("DESC")}
+    >
+      Prev
+    </button>
+  );
+}
+
+function FinishButton({ quiz, answers }: { quiz: Quiz; answers: answer[] }) {
+  let history = useHistory();
+  return (
+    <button
+      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      onClick={() => history.push("/result", { quiz, answers })}
+    >
+      Finish Test
+    </button>
+  );
+}
+
+function NextButton({
+  updateOption,
+}: {
+  updateOption: (action: string) => void;
+}) {
+  return (
+    <button
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      onClick={() => updateOption("INC")}
+    >
+      Next
+    </button>
   );
 }
 

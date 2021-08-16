@@ -3,7 +3,7 @@ import * as ROUTES from "../../constants/routes";
 
 export default function Navbar() {
   return (
-    <nav className="w-full bg-gray-600 text-gray-200">
+    <nav className="w-full sticky top-0 bg-gray-600 text-gray-200">
       <div className="px-4 sm:px-80 mx-auto flex justify-between items-center">
         <Link to={ROUTES.ROUTE_HOME} className="text-link">
           {" "}
