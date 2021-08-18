@@ -17,14 +17,13 @@ const PrivateRoute = ({ path, Element, ...props }: PrivateRouteType) => {
     ) : (
       <Redirect to={ROUTES.ROUTE_ACCOUNT} />
     );
-  } else {
-    return (
-      <div className="min-h-screen bg-gray-800">
-        <Navbar />
-        <div className="mx-auto mt-4 animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
-      </div>
-    );
   }
+  return (
+    <div className="min-h-screen bg-gray-800">
+      <Navbar />
+      <div className="mx-auto mt-4 animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+    </div>
+  );
 };
 
 export default PrivateRoute;

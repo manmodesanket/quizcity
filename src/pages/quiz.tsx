@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import { Timer } from "../components";
+import { useParams } from "react-router-dom";
+import {
+  FinishButton,
+  NextButton,
+  PrevButton,
+  QuestionComponent,
+  Timer,
+} from "../components";
 import { Time } from "../components/timer/timer.types";
 import { useData } from "../context/datacontext";
-import { emptyQuiz, Question, Quiz } from "../data/quiz.type";
-
-type answer = {
-  questionId: string;
-  optionId: string;
-};
+import { Answer, emptyQuiz } from "../data/quiz.type";
 
 function QuizPage() {
   const urlParam: any = useParams();
@@ -20,7 +21,7 @@ function QuizPage() {
   const id = urlParam.quizId;
   const [count, setCount] = useState(0);
   const [quiz, setQuiz] = useState(emptyQuiz);
-  const [answers, setAnswers] = useState<Array<answer>>([]);
+  const [answers, setAnswers] = useState<Array<Answer>>([]);
   const [selectedOption, setSelectedOption] = useState("");
   const [timeUp, setTimeUp] = useState(false);
   const minSec: Time = { minutes: 1, seconds: 0 };
@@ -48,7 +49,7 @@ function QuizPage() {
   };
 
   const updateAnswer = (questionId: string, optionId: string) => {
-    const answerObj: answer = { questionId, optionId };
+    const answerObj: Answer = { questionId, optionId };
     let newAnswersArray = answers.filter(
       (item) => item.questionId !== quiz.questions[count].id
     )!;
@@ -91,87 +92,6 @@ function QuizPage() {
         <div className="mx-auto mt-4 animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
       )}
     </div>
-  );
-}
-
-function QuestionComponent({
-  question,
-  count,
-  selectedOption,
-  updateAnswer,
-}: {
-  question: Question;
-  count: number;
-  selectedOption: string;
-  updateAnswer: (questionId: string, optionId: string) => void;
-}) {
-  return (
-    <section>
-      <div className="w-full flex justify-between mt-8 p-4">
-        <div className="font-bold text-lg rounded">
-          {count + 1}. {question.question}
-        </div>
-        <div className="font-bold">Points: {question.points}</div>
-      </div>
-
-      <ul>
-        {question.options.map((option) => (
-          <li
-            className={`mb-4 text-center w-full p-4 rounded-xl bg-gray-700 cursor-pointer font-bold ${
-              selectedOption === option.id
-                ? "bg-green-600"
-                : "hover:bg-green-800"
-            }`}
-            key={option.id}
-            onClick={() => updateAnswer(question.id, option.id)}
-          >
-            {option.content}
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-function PrevButton({
-  updateOption,
-}: {
-  updateOption: (action: string) => void;
-}) {
-  return (
-    <button
-      className="bg-white hover:bg-blue-200 rounded border-2 border-blue-500 text-blue-500 font-bold py-2 px-4 rounded"
-      onClick={() => updateOption("DESC")}
-    >
-      Prev
-    </button>
-  );
-}
-
-function FinishButton({ quiz, answers }: { quiz: Quiz; answers: answer[] }) {
-  let history = useHistory();
-  return (
-    <button
-      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-      onClick={() => history.push("/result", { quiz, answers })}
-    >
-      Finish Test
-    </button>
-  );
-}
-
-function NextButton({
-  updateOption,
-}: {
-  updateOption: (action: string) => void;
-}) {
-  return (
-    <button
-      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      onClick={() => updateOption("INC")}
-    >
-      Next
-    </button>
   );
 }
 

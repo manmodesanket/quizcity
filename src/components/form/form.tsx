@@ -7,15 +7,23 @@ export default function Form() {
   const [formType, setFormType] = useState("login");
   const [error, setError] = useState("");
 
+  function loginError() {
+    return formType === "login" && (email === "" || password === "");
+  }
+
+  function signUpError() {
+    return (
+      formType === "signup" &&
+      (username === "" || email === "" || password === "")
+    );
+  }
+
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (formType === "login" && (email === "" || password === "")) {
+    if (loginError()) {
       setError("Please enter all the fields");
-    } else if (
-      formType === "signup" &&
-      (username === "" || email === "" || password === "")
-    ) {
+    } else if (signUpError()) {
       setError("Please enter all the fields");
     } else {
       let auth = window.firebase.auth();

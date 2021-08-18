@@ -5,37 +5,51 @@ import { useEffect } from "react";
 import { getCorrectOption } from "../utils/quiz";
 import { addResultToBackend } from "../utils/result";
 import Navbar from "../components/navbar/navbar";
+import { useData } from "../context/datacontext";
 
 export default function ResultPage() {
   const { state } = useLocation();
   const [total, setTotal] = useState(0);
+  const { profile, loading } = useData();
   const { answers, quiz } = state as Result;
 
   useEffect(() => {
-    let sum = 0;
-    quiz.questions.forEach((item) => {
-      const answer = answers.filter(
-        (answerItem) => answerItem.questionId === item.id
-      );
-      if (answer.length > 0) {
-        let optionId = getCorrectOption(item);
-        if (answer[0].optionId === optionId) {
-          sum += 10;
-        } else {
-          sum -= 5;
+    if (!loading) {
+      let sum = 0;
+      quiz.questions.forEach((item) => {
+        const answer = answers.filter(
+          (answerItem) => answerItem.questionId === item.id
+        );
+        if (answer.length > 0) {
+          let optionId = getCorrectOption(item);
+          if (answer[0].optionId === optionId) {
+            sum += 10;
+          } else {
+            sum -= 5;
+          }
         }
-      }
-    });
-    setTotal(sum);
-    let db = window.firebase.firestore();
-    let data = {
-      title: quiz.title,
-      userId: window.firebase.auth().currentUser.displayName,
-      db: db,
-      total: sum,
-    };
-    addResultToBackend(data);
-  }, [answers, quiz]);
+      });
+      setTotal(sum);
+      let db = window.firebase.firestore();
+      let data = {
+        title: quiz.title,
+        userId: profile?.displayName,
+        db: db,
+        total: sum,
+      };
+      addResultToBackend(data);
+    }
+  }, [answers, quiz, loading, profile]);
+
+  if (loading) {
+    return (
+      <div>
+        {loading && (
+          <div className="mx-auto mt-4 animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <>

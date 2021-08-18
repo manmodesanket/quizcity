@@ -14,14 +14,13 @@ export default function Timer({
   const [[mins, secs], setTime] = useState([minutes, seconds]);
 
   const tick = () => {
-    if (mins === 0 && secs === 0) {
-      setTimeUp(true);
-    }
     if (secs === 0) {
-      setTime([mins - 1, 59]);
-    } else {
-      setTime([mins, secs - 1]);
+      if (mins === 0) {
+        return setTimeUp(true);
+      }
+      return setTime([mins - 1, 59]);
     }
+    setTime([mins, secs - 1]);
   };
 
   useEffect(() => {
