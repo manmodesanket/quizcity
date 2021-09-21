@@ -40,7 +40,7 @@ function AccountData() {
       }
     }
     getData();
-  }, [profile]);
+  }, [profile, setResults]);
 
   return (
     <>
