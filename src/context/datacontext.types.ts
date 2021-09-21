@@ -13,5 +13,6 @@ export type DATA_CONTEXT = {
   profile: User | null | undefined;
   logout: () => void;
   loading: Boolean;
+  setResults: React.Dispatch<React.SetStateAction<Result[] | undefined>>;
   results: Result[] | undefined;
 };

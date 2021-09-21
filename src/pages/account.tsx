@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form } from "../components";
 import Navbar from "../components/navbar/navbar";
 import { useData } from "../context/datacontext";
+import { Result } from "../context/datacontext.types";
 
 export default function AccountPage() {
   const { profile, loading } = useData();
@@ -22,7 +23,24 @@ export default function AccountPage() {
 }
 
 function AccountData() {
-  const { profile, logout, results } = useData();
+  const { profile, logout, results, setResults } = useData();
+
+  useEffect(() => {
+    async function getData(): Promise<void> {
+      if (profile != null) {
+        let db = window.firebase.firestore();
+        let userId = profile.displayName;
+        let data = await db
+          .collection("quiz-result")
+          .doc(userId)
+          .get()
+          .then((doc: any) => doc.data());
+        const dataMap: Result[] = Object.entries(data);
+        setResults(dataMap);
+      }
+    }
+    getData();
+  }, [profile]);
 
   return (
     <>

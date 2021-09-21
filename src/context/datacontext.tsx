@@ -39,23 +39,6 @@ export const DataProvider: FunctionComponent = ({ children }) => {
     return () => listener();
   }, []);
 
-  useEffect(() => {
-    async function getData(): Promise<void> {
-      if (user != null) {
-        let db = window.firebase.firestore();
-        let userId = user.displayName;
-        let data = await db
-          .collection("quiz-result")
-          .doc(userId)
-          .get()
-          .then((doc: any) => doc.data());
-        const dataMap: Result[] = Object.entries(data);
-        setResults(dataMap);
-      }
-    }
-    getData();
-  }, [user]);
-
   function logout(): void {
     window.firebase.auth().signOut();
     setUser(null);
@@ -82,6 +65,7 @@ export const DataProvider: FunctionComponent = ({ children }) => {
         profile: user,
         logout,
         results,
+        setResults,
         loading: loadingData && loadingAuth,
       }}
     >
