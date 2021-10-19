@@ -105,6 +105,17 @@ export default function Form() {
             value={formType === "login" ? "Login" : "Signup"}
             className="mt-4 px-2 py-2 m-auto w-11/12 rounded-lg gradient-bg cursor-pointer mb-4 focus:ring-4 focus:outline-none focus:ring-opacity-50 font-bold"
           />
+          {formType === "login" && (
+            <input
+              type="submit"
+              value={"Guest Login"}
+              onClick={() => {
+                setEmail("guest123@gmail.com");
+                setPassoword("guest123");
+              }}
+              className="mt-4 px-2 py-2 m-auto w-11/12 rounded-lg gradient-bg cursor-pointer mb-4 focus:ring-4 focus:outline-none focus:ring-opacity-50 font-bold"
+            />
+          )}
           {error && <span>{error}</span>}
           <div className="text-gray-200 pb-2">
             {formType === "login" && (
