@@ -1,37 +1,44 @@
-import { useState, useEffect, SetStateAction } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import {
+  FinishButton,
+  NextButton,
+  PrevButton,
+  QuestionComponent,
+  Timer,
+} from "../components";
+import { Time } from "../components/timer/timer.types";
 import { useData } from "../context/datacontext";
-import { emptyQuiz, Question, Quiz } from "../data/quiz.type";
-import { quizInitialState } from "../reducers/quiz.reducer";
-
-type answer = {
-  questionId: string;
-  optionId: string;
-};
+import { Answer, emptyQuiz } from "../data/quiz.type";
 
 function QuizPage() {
   const urlParam: any = useParams();
   const {
     state: { allQuizzes },
+    loading,
   } = useData();
 
   const id = urlParam.quizId;
   const [count, setCount] = useState(0);
   const [quiz, setQuiz] = useState(emptyQuiz);
-  const [answers, setAnswers] = useState<Array<answer>>([]);
+  const [answers, setAnswers] = useState<Array<Answer>>([]);
   const [selectedOption, setSelectedOption] = useState("");
+  const [timeUp, setTimeUp] = useState(false);
+  const minSec: Time = { minutes: 1, seconds: 0 };
 
   useEffect(() => {
-    const quiz = allQuizzes?.find((item) => item.id === id)!;
-    setQuiz(quiz);
-  }, [urlParam]);
+    if (allQuizzes !== null && allQuizzes.length > 0) {
+      const quiz = allQuizzes?.find((item) => item.id === id)!;
+      setQuiz(quiz);
+    }
+  }, [id, allQuizzes]);
 
   useEffect(() => {
     const answer = answers.find(
       (item) => item.questionId === quiz.questions[count].id
     )!;
     setSelectedOption(answer?.optionId);
-  }, [count, answers]);
+  }, [count, answers, quiz.questions]);
 
   const updateOption = (action: string) => {
     if (count + 1 < quiz.questions.length && action === "INC") {
@@ -42,7 +49,7 @@ function QuizPage() {
   };
 
   const updateAnswer = (questionId: string, optionId: string) => {
-    const answerObj: answer = { questionId, optionId };
+    const answerObj: Answer = { questionId, optionId };
     let newAnswersArray = answers.filter(
       (item) => item.questionId !== quiz.questions[count].id
     )!;
@@ -50,53 +57,41 @@ function QuizPage() {
     setAnswers(newAnswersArray);
   };
 
-  return quiz.title ? (
-    <div className="mx-auto px-5 sm:px-40 flex flex-col">
-      <h1 className="text-4xl text-center mt-4 font-bold">{quiz.title}</h1>
-      <div>
-        <div className="w-full flex justify-between mt-8">
-          <div>
-            {" "}
-            Question: {count + 1}/{quiz.questions.length}
-          </div>
-          <div>Points: 5</div>
-        </div>
-        <div className="my-4 font-bold text-lg bg-yellow-400 rounded p-4">
-          {quiz.questions[count].question}
-        </div>
-        <ul>
-          {quiz.questions[count].options.map((option) => (
-            <li
-              className={`mb-4 text-center w-full p-4 border-2 rounded-xl cursor-pointer font-bold ${
-                selectedOption === option.id
-                  ? "bg-green-300 border-green-300"
-                  : "hover:bg-green-600"
-              }`}
-              key={option.id}
-              onClick={() => updateAnswer(quiz.questions[count].id, option.id)}
-            >
-              {option.content}
-            </li>
-          ))}
-        </ul>
+  if (timeUp) {
+    return (
+      <div className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
+        <h2 className="mx-auto text-xl mb-4">Time is up</h2>
+        <FinishButton quiz={quiz} answers={answers} />
       </div>
-      <div className="flex justify-between">
-        <button
-          className="bg-white hover:bg-blue-200 rounded border-2 border-blue-500 text-blue-500 font-bold py-2 px-4 rounded"
-          onClick={() => updateOption("DESC")}
-        >
-          Prev
-        </button>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => updateOption("INC")}
-        >
-          Next
-        </button>
-      </div>
-    </div>
+    );
+  }
+
+  return !(quiz === emptyQuiz) ? (
+    <main className="mx-auto px-4 sm:px-80 flex flex-col bg-gray-800 min-h-screen text-gray-100">
+      <section className="text-4xl text-center mt-4 font-bold">
+        {quiz.title}
+      </section>
+      <Timer minSec={minSec} setTimeUp={setTimeUp} />
+      <QuestionComponent
+        question={quiz.questions[count]}
+        count={count}
+        selectedOption={selectedOption}
+        updateAnswer={updateAnswer}
+      />
+      <section className="flex justify-between">
+        {count > 0 && <PrevButton updateOption={updateOption} />}
+        <FinishButton quiz={quiz} answers={answers} />
+        {count + 1 < quiz.questions.length && (
+          <NextButton updateOption={updateOption} />
+        )}
+      </section>
+    </main>
   ) : (
-    <div>Hello</div>
+    <div>
+      {loading && (
+        <div className="mx-auto mt-4 animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+      )}
+    </div>
   );
 }
 

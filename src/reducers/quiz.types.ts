@@ -6,4 +6,10 @@ export type QUIZ_STATE = {
 
 export type ACTION =
   | { type: "RESET_STATE"; payload: { quizId: string } }
-  | { type: "INITIALIZE_ALL_QUIZZES"; payload: { allQuizzes: Array<Quiz> } };
+  | { type: "INITIALIZE_ALL_QUIZZES"; payload: { allQuizzes: Array<Quiz> } }
+  | {
+      type: "INITIALIZE_ALL_QUIZZES_FROM_FIREBASE";
+      payload: {
+        data: Array<Quiz> | null;
+      };
+    };

@@ -46,12 +46,12 @@ export const allQuizzes: Array<Quiz> = [
           {
             id: "cb5b38ca-8036-48e1-8ebd-58be67a11521",
             content: `Option 2`,
-            isAnswer: true,
+            isAnswer: false,
           },
           {
             id: "9f4d88cf-6bf1-45d9-a75d-442f882310cd",
             content: `Option 3`,
-            isAnswer: false,
+            isAnswer: true,
           },
         ],
       },

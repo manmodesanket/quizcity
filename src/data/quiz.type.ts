@@ -13,7 +13,7 @@ export type Question = {
 };
 
 export type Quiz = {
-  id: string;
+  id: string | null;
   title: string;
   imageUrl: string;
   totalScore: number;
@@ -21,9 +21,19 @@ export type Quiz = {
 };
 
 export const emptyQuiz: Quiz = {
-  id: "",
+  id: null,
   title: "",
   imageUrl: "",
   totalScore: 0,
   questions: [],
+};
+
+export type Answer = {
+  questionId: string;
+  optionId: string;
+};
+
+export type Result = {
+  answers: Array<Answer>;
+  quiz: Quiz;
 };

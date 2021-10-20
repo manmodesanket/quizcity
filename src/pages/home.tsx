@@ -1,11 +1,11 @@
-import { Header } from "../components";
 import { QuizList } from "../components";
+import Navbar from "../components/navbar/navbar";
 
 export default function Home() {
   return (
-    <div>
-      <Header title={"Quiz City"} />
+    <>
+      <Navbar />
       <QuizList />
-    </div>
+    </>
   );
 }

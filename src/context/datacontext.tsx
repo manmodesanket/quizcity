@@ -4,28 +4,53 @@ import {
   useEffect,
   useContext,
   useReducer,
+  useState,
 } from "react";
 import { quizReducer, quizInitialState } from "../reducers/quiz.reducer";
-import { getAllQuizzes } from "../utils/quiz";
-import { DATA_CONTEXT } from "./datacontext.types";
+import { getAllQuizesFromFirebase } from "../utils/quiz";
+import { DATA_CONTEXT, Result, User } from "./datacontext.types";
+import * as REDUCER_CONSTANTS from "../constants/reducer";
 
-const DataContext = createContext<DATA_CONTEXT>({
-  state: quizInitialState,
-  dispatch: () => null,
-});
+const DataContext = createContext<DATA_CONTEXT>({} as DATA_CONTEXT);
 
 export const useData = () => useContext(DataContext);
 
 export const DataProvider: FunctionComponent = ({ children }) => {
   const [state, dispatch] = useReducer(quizReducer, quizInitialState);
+  const [results, setResults] = useState<Result[]>();
+  const [loadingData, setLoadingData] = useState(true);
+  const [loadingAuth, setLoadingAuth] = useState(true);
+  const [user, setUser] = useState<User | null>();
 
-  const initAllQuizzes = async () => {
-    const allQuizzes = getAllQuizzes();
-    allQuizzes &&
-      dispatch({
-        type: "INITIALIZE_ALL_QUIZZES",
-        payload: { allQuizzes },
-      });
+  useEffect(() => {
+    const listener = window.firebase.auth().onAuthStateChanged((user: any) => {
+      if (user != null) {
+        let newUser: User = {
+          displayName: user.displayName,
+          email: user.email,
+        };
+        setUser(newUser);
+        setLoadingAuth(false);
+      } else {
+        setUser(null);
+        setLoadingAuth(false);
+      }
+    });
+    return () => listener();
+  }, []);
+
+  function logout(): void {
+    window.firebase.auth().signOut();
+    setUser(null);
+  }
+
+  const initAllQuizzes = async (): Promise<void> => {
+    let data = await getAllQuizesFromFirebase();
+    dispatch({
+      type: REDUCER_CONSTANTS.INITIALIZE_QUIZ,
+      payload: { data },
+    });
+    setLoadingData(false);
   };
 
   useEffect(() => {
@@ -37,6 +62,11 @@ export const DataProvider: FunctionComponent = ({ children }) => {
       value={{
         state,
         dispatch,
+        profile: user,
+        logout,
+        results,
+        setResults,
+        loading: loadingData && loadingAuth,
       }}
     >
       {children}
